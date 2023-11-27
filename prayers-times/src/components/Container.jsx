@@ -13,7 +13,10 @@ import Remaining from "./Remaining";
 
 export default function Container() {
   const [data, setData] = useState(null);
-
+  const [time, setTime] = useState(0);
+  function getCurrentTime(time) {
+    setTime(time);
+  }
   useEffect(() => {
     const location = { lat: "21.422510", long: "39.826168" };
     const currentDate = new Date();
@@ -47,37 +50,73 @@ export default function Container() {
 
     fetchAPI();
   }, []);
-
-  console.log(new Date().getTime());
+  console.log(data);
+  // console.log(new Date().getTime());
   // console.log(data);
   return (
     <>
-      <div className="bg-slate-100 flex items-center justify-center h-screen">
-        <div className="container flex flex-col w-11/12 h-11/12 p-5">
-          <Card>
-            <Time
-              hijriDate={data ? data.date.hijri.date : null}
-              gregorianDate={data ? data.date.gregorian.date : null}
-            />
-          </Card>
-          <Card>
-            <Remaining data={data.timings} />
-          </Card>
-          <Card>
-            <div className="flex flex-col">
-              {data ? (
-                <>
-                  <Prayer time={data.timings.Fajr}>الفجر</Prayer>
-                  <Prayer time={data.timings.Dhuhr}>الظهر</Prayer>
-                  <Prayer time={data.timings.Asr}>العصر</Prayer>
-                  <Prayer time={data.timings.Maghrib}>المغرب</Prayer>
-                  <Prayer time={data.timings.Isha}>العشاء</Prayer>
-                </>
-              ) : (
-                "حدث خطأ ما"
-              )}
+      <div className="bg-slate-800 flex items-center justify-center h-screen">
+        <div className="container flex flex-col w-3/5 h-11/12 p-5">
+          <Time
+            hijriDate={data ? data.date.hijri.date : null}
+            gregorianDate={data ? data.date.gregorian.date : null}
+            getCurrentTime={getCurrentTime}
+          />
+          <Remaining
+            timings={data ? data.timings : null}
+            date={data ? data.date.gregorian.date : null}
+            currentTime={time}
+          />
+          {data ? (
+            <div className="grid grid-cols-2 md:grid-cols-1 gap-2 mt-2">
+              <Prayer
+                time={data.timings.Fajr}
+                background="morning5.jpg"
+                position="top
+                "
+              >
+                الفجر
+              </Prayer>
+              <Prayer
+                time={data.timings.Sunrise}
+                background="sunset3.jpg"
+                position="top
+                "
+              >
+                الإشراق
+              </Prayer>
+              <Prayer
+                time={data.timings.Dhuhr}
+                background="evening5.png"
+                position="center"
+              >
+                {new Date().getDay() == 5 ? "الجمعة" : "الظهر"}
+              </Prayer>
+              <Prayer
+                time={data.timings.Asr}
+                background="evening5.jpg"
+                position="center"
+              >
+                العصر
+              </Prayer>
+              <Prayer
+                time={data.timings.Maghrib}
+                background="sunset6.jpg"
+                position="center"
+              >
+                المغرب
+              </Prayer>
+              <Prayer
+                time={data.timings.Isha}
+                background="night4.jpg"
+                position="top"
+              >
+                العشاء
+              </Prayer>
             </div>
-          </Card>
+          ) : (
+            "حدث خطأ ما"
+          )}
         </div>
       </div>
     </>
